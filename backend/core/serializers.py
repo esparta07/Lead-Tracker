@@ -5,13 +5,11 @@ from django.contrib.auth import (
     get_user_model,
     authenticate,
 )
-
-
-
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth import get_user_model, authenticate
+
+
+
+
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,13 +26,22 @@ class UserSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set required=False for all fields except phone_number and password
-        for field_name in self.fields:
-            if field_name not in ['phone_number', 'password']:
-                self.fields[field_name].required = False
+        required_fields = {'phone_number', 'password'}
+        for field_name in set(self.fields) - required_fields:
+            self.fields[field_name].required = False
+
+    def create(self, validated_data):
+        """Create and return a new user with an encrypted password."""
+        password = validated_data.pop('password', None)
+        user = self.Meta.model(**validated_data)
+        if password:
+            user.set_password(password)
+        user.save()
+        return user
 
     def update(self, instance, validated_data):
         """Update and return user."""
-        password = validated_data.get('password')
+        password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
         return super().update(instance, validated_data)

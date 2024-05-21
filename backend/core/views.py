@@ -1,21 +1,13 @@
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from django.contrib.auth import get_user_model, authenticate
-import jwt
-from django.conf import settings
-from .serializers import UserSerializer, LoginSerializer
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth import authenticate
-import jwt
-from rest_framework.generics import UpdateAPIView
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.contrib.auth import get_user_model, authenticate
 from django.conf import settings
-from rest_framework.generics import RetrieveAPIView, UpdateAPIView
+import jwt
+from .serializers import UserSerializer, LoginSerializer
 
 class CreateUserView(CreateAPIView):
     """Create a new user in the system."""
