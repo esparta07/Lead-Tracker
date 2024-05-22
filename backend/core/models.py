@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth import get_user_model
+
 # Create your models here.
 
 class UserManager(BaseUserManager):
@@ -71,4 +73,40 @@ class User(AbstractBaseUser):
         return user_role
     
 
+    
+class Source(models.Model):
+    name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
+class SubSource(models.Model):
+    name = models.CharField(max_length=255)
+    source = models.ForeignKey(Source, related_name='sub_sources', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.name} (SubSource of {self.source.name})'
+
+class Status(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class Lead(models.Model):
+    date = models.DateField()
+    company_name = models.CharField(max_length=255)
+    assigned = models.ForeignKey(User, on_delete=models.CASCADE)
+    point_of_contact = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    sub_source = models.ForeignKey(SubSource, on_delete=models.CASCADE, null=True, blank=True)
+    lead_status = models.ForeignKey(Status, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.company_name
+
+class Campaign(models.Model):
+    campaign_name = models.CharField(max_length=255)
+    campaign_source = models.ForeignKey(SubSource, on_delete=models.CASCADE)
