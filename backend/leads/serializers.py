@@ -19,11 +19,10 @@ class StatusSerializer(serializers.ModelSerializer):
 
 class FileUploadSerializer(serializers.Serializer):
     file = serializers.FileField()
-    processing_type = serializers.ChoiceField(choices=[('0', 'Custom Format'), ('1', 'Facebook')], default='0')
+    processing_type = serializers.ChoiceField(choices=[('0', 'Custom Format'), ('1', 'Facebook'),('2','Website')], default='0')
 
 
 class LeadSerializer(serializers.ModelSerializer):
-    company_name = serializers.CharField(required=True)
     source = serializers.PrimaryKeyRelatedField(queryset=Source.objects.all(), required=True)
     phone_number = serializers.CharField(required=False)
     email = serializers.EmailField(required=False)
@@ -46,6 +45,6 @@ class LeadSerializer(serializers.ModelSerializer):
         fields = super().get_fields()
         # Set required=False for all fields except company_name, source, phone_number, and email and date
         for field_name in fields:
-            if field_name not in ['company_name','date', 'source', 'phone_number', 'email']:
+            if field_name not in ['date', 'source', 'phone_number', 'email']:
                 fields[field_name].required = False
         return fields

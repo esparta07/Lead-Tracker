@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'leads',
     'rest_framework',
     'drf_spectacular',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
